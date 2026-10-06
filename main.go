@@ -9,7 +9,7 @@ import (
 const appName = "System-Info"
 
 func greetings() {
-	fmt.Println("hello  devOps")
+	fmt.Println("hello, devOps")
 }
 func printHeader() {
 	fmt.Println("======", appName, "======")
@@ -26,7 +26,7 @@ func main() {
 
 	fmt.Println("Hostname:", hostname)
 	fmt.Println("OS :", runtime.GOOS)
-	fmt.Println("Architeure: ", runtime.GOARCH)
+	fmt.Println("Architecture: ", runtime.GOARCH)
 	fmt.Println("CPUs:", runtime.NumCPU())
 	fmt.Println("Go version:", runtime.Version())
 
