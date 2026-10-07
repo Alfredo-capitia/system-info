@@ -24,18 +24,32 @@ func checkPort(port int) error {
 	}
 	return nil
 }
+
+func readMomInfo() error {
+	data, err := os.ReadFile("/proc/meminfo")
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(string(data))
+	return nil
+}
 func main() {
 
 	printHeader()
-	// var display int = numberPrint(5)
 
-	// fmt.Println(display)
 	err := checkPort(defaultPort)
 	if err != nil {
 		fmt.Println("erro:", err)
 	} else {
 		fmt.Printf("Port is valid: %d\n", defaultPort)
 	}
+
+	err = readMomInfo()
+	if err != nil {
+		fmt.Println("error reading memory info", err)
+	}
+
 	hostname, err := getHostname()
 	if err != nil {
 		fmt.Println("Error retrieving hostname:", err)
