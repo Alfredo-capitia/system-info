@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"runtime"
+	"strconv"
+	"strings"
 )
 
 const (
@@ -31,12 +33,79 @@ func readMomInfo() error {
 		return err
 	}
 
-	fmt.Println(string(data))
-	return nil
+	lines := strings.Split(string(data), "\n")
+
+	for _, line := range lines {
+		if !strings.HasPrefix(line, "MemTotal:") {
+			continue
+		}
+
+		fmt.Println("ENCONTREI:", line)
+
+		parts := strings.Fields(line)
+
+		if len(parts) < 3 {
+			return fmt.Errorf("linha de memória inválida: %q", line)
+		}
+
+		fmt.Println("nome:", parts[0])
+		fmt.Println("valor:", parts[1])
+		fmt.Println("unidade:", parts[2])
+
+		value, err := strconv.Atoi(parts[1])
+		if err != nil {
+			return fmt.Errorf("erro ao converter %q: %w", parts[1], err)
+		}
+
+		mb := float64(value) / 1024
+		gb := mb / 1024
+
+		fmt.Printf("Memória: %.2f MB\n", mb)
+		fmt.Printf("Memória: %.2f GB\n", gb)
+
+		return nil
+	}
+
+	return fmt.Errorf("MemTotal não encontrado")
 }
+
+// func textSplit() {
+// 	text := "MemTotal: 15567864 kB\nMemFree: 912252 kB\nMemAvailable: 8124176 kB"
+// 	// parts := strings.Split(text, ":")
+// 	lines := strings.Split(text, "\n")
+
+// 	for _, line := range lines {
+// 		fmt.Println("linha ", line)
+
+// 		if strings.HasPrefix(line, "MemTotal") {
+// 			fmt.Println("encontrei ", line)
+
+// 			parts := strings.Fields(line)
+// 			fmt.Println("nome:", parts[0])
+
+// 			v, err := strconv.Atoi(parts[1])
+// 			if err != nil {
+// 				fmt.Println("erro ao converter", err)
+// 				return
+// 			}
+
+// 			fmt.Println("valor:", v)
+
+// 			fmt.Println("unidade :", parts[2])
+// 			mb := v / 1024
+// 			gb := float32(mb) / 1024
+
+// 			fmt.Println("Mémoria:", mb, "MB")
+// 			fmt.Printf("Mémória : %.2f GB\n", gb)
+// 		}
+// 	}
+
+// }
 func main() {
 
 	printHeader()
+
+	// textSplit()
 
 	err := checkPort(defaultPort)
 	if err != nil {
