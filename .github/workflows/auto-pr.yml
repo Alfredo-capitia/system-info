@@ -1,0 +1,35 @@
+
+name: Auto PR
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+      - 'fix/**'
+      - 'hotfix/**'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  create-pull-request:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          HEAD_BRANCH: ${{ github.ref_name }}
+        run: |
+          if gh pr view "$HEAD_BRANCH" --repo "$GH_REPO" >/dev/null 2>&1; then
+            echo "Pull request already exists for $HEAD_BRANCH"
+          else
+            gh pr create \
+              --repo "$GH_REPO" \
+              --base main \
+              --head "$HEAD_BRANCH" \
+              --title "Auto PR: $HEAD_BRANCH" \
+              --body "Pull request created automatically for branch $HEAD_BRANCH."
+          fi
